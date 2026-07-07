@@ -1,0 +1,1626 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>The Green Lab: Designing the Perfect Shade</title>
+    <style>
+        :root {
+            --slate-50: #f8fafc;
+            --slate-100: #f1f5f9;
+            --slate-200: #e2e8f0;
+            --slate-300: #cbd5e1;
+            --slate-400: #94a3b8;
+            --slate-600: #475569;
+            --slate-700: #334155;
+            --slate-800: #1e293b;
+            --slate-900: #0f172a;
+            
+            --yellow-paint: #facc15;
+            --yellow-paint-hover: #eab308;
+            --blue-paint: #2563eb;
+            --blue-paint-hover: #1d4ed8;
+            --green-lab: #10b981;
+            
+            --font-sans: 'Inter', system-ui, -apple-system, sans-serif;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: var(--font-sans);
+            background-color: var(--slate-50);
+            color: var(--slate-800);
+            line-height: 1.5;
+            padding: 20px;
+        }
+
+        /* Container Layout */
+        .lab-wrapper {
+            max-width: 1400px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 24px;
+        }
+
+        @media (min-width: 1024px) {
+            .lab-wrapper {
+                grid-template-columns: 420px 1fr;
+            }
+        }
+
+        /* Typography & Common UI */
+        h1, h2, h3, h4 {
+            font-weight: 700;
+            color: var(--slate-900);
+        }
+
+        header {
+            background-color: var(--slate-900);
+            color: white;
+            padding: 24px;
+            border-radius: 16px;
+            margin-bottom: 24px;
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+            box-shadow: 0 4px 20px rgba(15, 23, 42, 0.08);
+        }
+
+        @media (min-width: 768px) {
+            header {
+                flex-direction: row;
+                align-items: center;
+                justify-content: space-between;
+            }
+        }
+
+        .header-meta h1 {
+            color: white;
+            font-size: 1.8rem;
+            margin-bottom: 4px;
+        }
+
+        .header-meta p {
+            color: var(--slate-400);
+            font-size: 0.95rem;
+        }
+
+        /* Badges Container */
+        .badges-rack {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+        }
+
+        .badge-pill {
+            background-color: rgba(255, 255, 255, 0.08);
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            padding: 6px 12px;
+            border-radius: 9999px;
+            font-size: 0.8rem;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            color: var(--slate-300);
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            filter: grayscale(1);
+            opacity: 0.5;
+        }
+
+        .badge-pill.unlocked {
+            filter: grayscale(0);
+            opacity: 1;
+            background-color: rgba(16, 185, 129, 0.15);
+            border-color: rgba(16, 185, 129, 0.4);
+            color: #a7f3d0;
+            box-shadow: 0 0 10px rgba(16, 185, 129, 0.2);
+        }
+
+        /* Card Panels */
+        .panel {
+            background: white;
+            border: 1px solid var(--slate-200);
+            border-radius: 16px;
+            padding: 24px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.02), 0 4px 12px rgba(0,0,0,0.03);
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        .panel-title {
+            font-size: 1.15rem;
+            border-bottom: 2px solid var(--slate-100);
+            padding-bottom: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        /* Mix Station CSS */
+        .paint-dispenser {
+            background-color: var(--slate-50);
+            border: 1px solid var(--slate-200);
+            border-radius: 12px;
+            padding: 16px;
+        }
+
+        .dispenser-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 12px;
+            font-weight: 600;
+        }
+
+        .dispenser-label {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .dispenser-color-indicator {
+            width: 14px;
+            height: 14px;
+            border-radius: 50%;
+            display: inline-block;
+        }
+
+        .yellow-indicator { background-color: var(--yellow-paint); border: 1px solid #eab308; }
+        .blue-indicator { background-color: var(--blue-paint); border: 1px solid #1d4ed8; }
+
+        .slider-group {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .btn-step {
+            width: 36px;
+            height: 36px;
+            border-radius: 8px;
+            border: 1px solid var(--slate-300);
+            background: white;
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: var(--slate-700);
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.15s ease;
+            user-select: none;
+        }
+
+        .btn-step:hover {
+            background-color: var(--slate-100);
+            border-color: var(--slate-400);
+        }
+
+        .btn-step:active {
+            transform: scale(0.95);
+        }
+
+        .input-slider {
+            flex: 1;
+            height: 8px;
+            border-radius: 4px;
+            outline: none;
+            -webkit-appearance: none;
+            background: var(--slate-200);
+        }
+
+        .input-slider::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            width: 22px;
+            height: 22px;
+            border-radius: 50%;
+            cursor: pointer;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.15);
+            transition: transform 0.1s;
+        }
+
+        .input-slider::-webkit-slider-thumb:hover {
+            transform: scale(1.1);
+        }
+
+        #slider-yellow::-webkit-slider-thumb {
+            background-color: var(--yellow-paint);
+            border: 3px solid white;
+        }
+
+        #slider-blue::-webkit-slider-thumb {
+            background-color: var(--blue-paint);
+            border: 3px solid white;
+        }
+
+        .paint-value {
+            font-size: 1.15rem;
+            font-weight: 700;
+            min-width: 44px;
+            text-align: right;
+        }
+
+        /* Mixing Beaker Assembly */
+        .mixing-chamber {
+            position: relative;
+            background: radial-gradient(circle at center, #ffffff 0%, var(--slate-100) 100%);
+            border: 2px dashed var(--slate-300);
+            border-radius: 12px;
+            height: 250px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: flex-end;
+            padding-bottom: 24px;
+            overflow: hidden;
+        }
+
+        .beaker-body {
+            position: relative;
+            width: 160px;
+            height: 180px;
+            border: 6px solid var(--slate-700);
+            border-top: none;
+            border-bottom-left-radius: 20px;
+            border-bottom-right-radius: 20px;
+            z-index: 5;
+            display: flex;
+            align-items: flex-end;
+            background-color: rgba(255, 255, 255, 0.4);
+        }
+
+        .beaker-body::before {
+            content: '';
+            position: absolute;
+            top: -6px;
+            left: -10px;
+            width: 180px;
+            height: 10px;
+            background-color: var(--slate-700);
+            border-radius: 6px;
+        }
+
+        .beaker-fluid {
+            width: 100%;
+            height: 0%;
+            background-color: transparent;
+            border-bottom-left-radius: 12px;
+            border-bottom-right-radius: 12px;
+            transition: height 0.4s cubic-bezier(0.4, 0, 0.2, 1), background-color 0.4s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .fluid-wave {
+            position: absolute;
+            top: -10px;
+            left: 0;
+            width: 200%;
+            height: 20px;
+            background: rgba(255, 255, 255, 0.15);
+            border-radius: 40%;
+            animation: wave-motion 6s linear infinite;
+        }
+
+        @keyframes wave-motion {
+            0% { transform: translateX(0) rotate(0deg); }
+            100% { transform: translateX(-50%) rotate(360deg); }
+        }
+
+        .pour-stream {
+            position: absolute;
+            top: 0;
+            width: 6px;
+            height: 0%;
+            border-radius: 3px;
+            opacity: 0;
+            z-index: 2;
+            transition: opacity 0.15s ease;
+        }
+
+        .pour-stream.active {
+            opacity: 0.8;
+            height: 100%;
+            animation: stream-flow 0.5s linear infinite;
+        }
+
+        #stream-yellow {
+            left: 35%;
+            background: linear-gradient(to bottom, var(--yellow-paint), #fef08a);
+        }
+
+        #stream-blue {
+            right: 35%;
+            background: linear-gradient(to bottom, var(--blue-paint), #93c5fd);
+        }
+
+        @keyframes stream-flow {
+            0% { background-position-y: 0px; }
+            100% { background-position-y: 40px; }
+        }
+
+        .beaker-graduations {
+            position: absolute;
+            right: 12px;
+            top: 20px;
+            height: 130px;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            font-size: 0.7rem;
+            font-weight: 700;
+            color: var(--slate-400);
+            border-right: 2px solid var(--slate-300);
+            padding-right: 6px;
+        }
+
+        .grad-mark {
+            position: relative;
+        }
+        .grad-mark::after {
+            content: '';
+            position: absolute;
+            right: -8px;
+            top: 5px;
+            width: 6px;
+            height: 1px;
+            background-color: var(--slate-400);
+        }
+
+        .shade-identity {
+            font-weight: 700;
+            font-size: 1.1rem;
+            text-align: center;
+            margin-top: 8px;
+            color: var(--slate-800);
+        }
+
+        .action-button-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px;
+        }
+
+        .btn {
+            padding: 12px 16px;
+            font-size: 0.95rem;
+            font-weight: 600;
+            border-radius: 10px;
+            cursor: pointer;
+            border: none;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            transition: all 0.2s;
+        }
+
+        .btn-mix {
+            background-color: var(--green-lab);
+            color: white;
+        }
+
+        .btn-mix:hover {
+            background-color: #059669;
+        }
+
+        .btn-clear {
+            background-color: var(--slate-100);
+            color: var(--slate-700);
+            border: 1px solid var(--slate-200);
+        }
+
+        .btn-clear:hover {
+            background-color: var(--slate-200);
+        }
+
+        /* Dashboard UI Elements */
+        .dashboard-grid {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 16px;
+        }
+
+        @media (min-width: 640px) {
+            .dashboard-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+
+        .dashboard-widget {
+            background: var(--slate-50);
+            border: 1px solid var(--slate-200);
+            border-radius: 12px;
+            padding: 16px;
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            transition: transform 0.2s ease, opacity 0.3s ease;
+        }
+
+        .widget-label {
+            font-size: 0.8rem;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            color: var(--slate-600);
+            font-weight: 600;
+        }
+
+        .widget-value {
+            font-size: 1.6rem;
+            font-weight: 800;
+            color: var(--slate-900);
+        }
+
+        /* SVG Double Number Line */
+        .double-number-line-svg {
+            width: 100%;
+            height: 100px;
+            background: white;
+            border-radius: 8px;
+            border: 1px solid var(--slate-200);
+        }
+
+        /* SVG Pie Chart styling */
+        .chart-flex {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            height: 120px;
+        }
+
+        .pie-svg {
+            transform: rotate(-90deg);
+            border-radius: 50%;
+        }
+
+        /* Ratio Strip Representation */
+        .ratio-strip-bar {
+            display: flex;
+            height: 32px;
+            border-radius: 8px;
+            overflow: hidden;
+            border: 1px solid var(--slate-300);
+            background-color: var(--slate-200);
+        }
+
+        .strip-segment {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            font-size: 0.85rem;
+            color: white;
+            text-shadow: 0 1px 2px rgba(0,0,0,0.3);
+            transition: width 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .strip-yellow { background-color: var(--yellow-paint); color: var(--slate-800); text-shadow: none; }
+        .strip-blue { background-color: var(--blue-paint); }
+
+        /* Saved Recipes & Gallery */
+        .gallery-shelf {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(130px, 1fr));
+            gap: 12px;
+            min-height: 100px;
+            border: 2px dashed var(--slate-200);
+            border-radius: 12px;
+            padding: 12px;
+        }
+
+        .gallery-item {
+            background-color: white;
+            border: 1px solid var(--slate-200);
+            border-radius: 10px;
+            padding: 8px;
+            cursor: pointer;
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+            transition: all 0.2s ease;
+        }
+
+        .gallery-item:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 10px rgba(0,0,0,0.05);
+        }
+
+        .gallery-item.selected {
+            border-color: var(--green-lab);
+            box-shadow: 0 0 0 2px rgba(16, 185, 129, 0.2);
+        }
+
+        .swatch-box {
+            width: 100%;
+            height: 48px;
+            border-radius: 6px;
+            border: 1px solid rgba(0,0,0,0.06);
+            transition: background-color 0.3s;
+        }
+
+        .swatch-meta {
+            font-size: 0.75rem;
+            font-weight: 600;
+            text-align: center;
+            color: var(--slate-700);
+        }
+
+        .btn-delete-swatch {
+            position: absolute;
+            top: -6px;
+            right: -6px;
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            background-color: #ef4444;
+            color: white;
+            border: none;
+            font-size: 0.7rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            opacity: 0;
+            transition: opacity 0.2s;
+        }
+
+        .gallery-item:hover .btn-delete-swatch {
+            opacity: 1;
+        }
+
+        /* Compare Dashboard Section */
+        .compare-box {
+            background-color: #eff6ff;
+            border: 1px solid #bfdbfe;
+            border-radius: 12px;
+            padding: 16px;
+            display: none;
+        }
+
+        .compare-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 16px;
+            margin-bottom: 12px;
+        }
+
+        .compare-card {
+            background-color: white;
+            border: 1px solid #dbeafe;
+            border-radius: 8px;
+            padding: 12px;
+            text-align: center;
+        }
+
+        /* Inquiry Challenge System: Multi-Prompt Grid */
+        .challenge-board-all {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 12px;
+        }
+
+        @media (min-width: 768px) {
+            .challenge-board-all {
+                grid-template-columns: 1fr 1fr;
+            }
+        }
+
+        .challenge-card-item {
+            background-color: #f0fdf4;
+            border-left: 4px solid var(--green-lab);
+            border-radius: 4px 12px 12px 4px;
+            padding: 14px;
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+            font-size: 0.9rem;
+            transition: all 0.2s ease;
+        }
+
+        .challenge-card-item.achieved {
+            background-color: #ecfdf5;
+            border-left-color: #059669;
+            opacity: 0.85;
+        }
+
+        .challenge-badge-status {
+            font-size: 0.7rem;
+            text-transform: uppercase;
+            font-weight: 700;
+            letter-spacing: 0.05em;
+            color: #047857;
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+
+        .challenge-badge-status.achieved-txt {
+            color: #059669;
+        }
+
+        .challenge-card-title {
+            font-weight: 700;
+            color: var(--slate-900);
+        }
+
+        .challenge-card-text {
+            color: #065f46;
+            font-weight: 500;
+            line-height: 1.4;
+        }
+
+        /* Teacher Console Panel */
+        .teacher-accordion {
+            border: 2px solid #0ea5e9;
+            border-radius: 16px;
+            background-color: #f0f9ff;
+            overflow: hidden;
+        }
+
+        .teacher-bar {
+            background-color: #e0f2fe;
+            padding: 16px 24px;
+            font-weight: 700;
+            color: #0369a1;
+            cursor: pointer;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            user-select: none;
+        }
+
+        .teacher-body {
+            padding: 24px;
+            display: none;
+            flex-direction: column;
+            gap: 16px;
+        }
+
+        .teacher-body.expanded {
+            display: flex;
+        }
+
+        .toggle-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+            gap: 12px;
+        }
+
+        .toggle-switch {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            color: #0c4a6e;
+        }
+
+        .toggle-switch input {
+            cursor: pointer;
+            width: 16px;
+            height: 16px;
+            accent-color: #0ea5e9;
+        }
+
+        .representation-hidden {
+            display: none !important;
+        }
+
+        .visually-hidden {
+            position: absolute;
+            width: 1px;
+            height: 1px;
+            padding: 0;
+            margin: -1px;
+            overflow: hidden;
+            clip: rect(0, 0, 0, 0);
+            border: 0;
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <div class="header-meta">
+            <h1>The Green Lab</h1>
+            <p>Grade 7 Proportional Design Studio &bull; Creative Paint Scientist</p>
+        </div>
+        <div class="badges-rack" id="badges-container">
+            <div class="badge-pill" id="badge-explorer" title="Mix 5 different ingredient ratios">🎨 Colour Explorer</div>
+            <div class="badge-pill" id="badge-creator" title="Save at least 3 custom shades to the gallery">🧪 Recipe Creator</div>
+            <div class="badge-pill" id="badge-detective" title="Examine and compare recipes in compare mode">🔍 Pattern Detective</div>
+            <div class="badge-pill" id="badge-equivalent" title="Discover different recipes that make identical shades">🟢 Equivalent Expert</div>
+            <div class="badge-pill" id="badge-mixer" title="Fill the beaker to a volume of 20 units or more">🌱 Master Mixer</div>
+        </div>
+    </header>
+
+    <main class="lab-wrapper">
+        
+        <!-- Column 1: Paint Dispenser Controls & Live Beaker -->
+        <section class="panel">
+            <h2 class="panel-title">
+                <span>1. Dispenser Controls</span>
+                <span style="font-size: 0.8rem; font-weight: normal; color: var(--slate-400);">Mix Ingredients</span>
+            </h2>
+
+            <!-- Yellow Dispenser -->
+            <div class="paint-dispenser">
+                <div class="dispenser-header">
+                    <label for="slider-yellow" class="dispenser-label">
+                        <span class="dispenser-color-indicator yellow-indicator"></span>
+                        Yellow Paint (Y)
+                    </label>
+                    <span class="paint-value" id="dispenser-y-val">1</span>
+                </div>
+                <div class="slider-group">
+                    <button class="btn-step" onclick="adjustDispenser('yellow', -1)" aria-label="Decrease Yellow">&minus;</button>
+                    <input type="range" id="slider-yellow" class="input-slider" min="0" max="20" value="1" oninput="handleMixChange()">
+                    <button class="btn-step" onclick="adjustDispenser('yellow', 1)" aria-label="Increase Yellow">&plus;</button>
+                </div>
+            </div>
+
+            <!-- Blue Dispenser -->
+            <div class="paint-dispenser">
+                <div class="dispenser-header">
+                    <label for="slider-blue" class="dispenser-label">
+                        <span class="dispenser-color-indicator blue-indicator"></span>
+                        Blue Paint (B)
+                    </label>
+                    <span class="paint-value" id="dispenser-b-val">1</span>
+                </div>
+                <div class="slider-group">
+                    <button class="btn-step" onclick="adjustDispenser('blue', -1)" aria-label="Decrease Blue">&minus;</button>
+                    <input type="range" id="slider-blue" class="input-slider" min="0" max="20" value="1" oninput="handleMixChange()">
+                    <button class="btn-step" onclick="adjustDispenser('blue', 1)" aria-label="Increase Blue">&plus;</button>
+                </div>
+            </div>
+
+            <!-- Interactive Beaker -->
+            <div class="mixing-chamber" aria-live="polite">
+                <!-- Spouts / Streams -->
+                <div class="pour-stream" id="stream-yellow"></div>
+                <div class="pour-stream" id="stream-blue"></div>
+
+                <div class="beaker-body">
+                    <div class="beaker-fluid" id="beaker-fluid-level">
+                        <div class="fluid-wave"></div>
+                    </div>
+                </div>
+
+                <div class="beaker-graduations" aria-hidden="true">
+                    <span class="grad-mark">40u</span>
+                    <span class="grad-mark">30u</span>
+                    <span class="grad-mark">20u</span>
+                    <span class="grad-mark">10u</span>
+                    <span class="grad-mark">0u</span>
+                </div>
+            </div>
+
+            <h3 class="shade-identity" id="beaker-shade-label">Classic Green</h3>
+
+            <!-- Action Area -->
+            <div class="action-button-row">
+                <button class="btn btn-mix" onclick="saveCurrentRecipe()">
+                    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15"></path></svg>
+                    Save Shade
+                </button>
+                <button class="btn btn-clear" onclick="resetDispenser()">
+                    Reset Recipe
+                </button>
+            </div>
+        </section>
+
+        <!-- Column 2: Dashboard Representations & Discovery Tools -->
+        <div style="display: flex; flex-direction: column; gap: 24px;">
+            
+            <!-- Dynamic Representation Dashboard -->
+            <section class="panel" id="dashboard-panel">
+                <h2 class="panel-title">
+                    <span>2. Mathematical Dashboard</span>
+                    <span style="font-size: 0.8rem; font-weight: normal; color: var(--slate-400);">Linked Representations</span>
+                </h2>
+
+                <div class="dashboard-grid">
+                    <!-- Unit Summary -->
+                    <div class="dashboard-widget" id="widget-totals">
+                        <span class="widget-label">Mixture Composition</span>
+                        <div style="display: flex; justify-content: space-between; align-items: baseline;">
+                            <span class="widget-value" id="widget-total-val">2 units</span>
+                            <span style="font-size: 0.9rem; color: var(--slate-600);" id="widget-breakdown-val">(1Y : 1B)</span>
+                        </div>
+                    </div>
+
+                    <!-- Ratio Widget -->
+                    <div class="dashboard-widget" id="widget-ratio">
+                        <span class="widget-label">Ratio (Yellow : Blue)</span>
+                        <span class="widget-value" id="widget-ratio-val">1 : 1</span>
+                    </div>
+
+                    <!-- Simplified Ratio -->
+                    <div class="dashboard-widget" id="widget-simplified">
+                        <span class="widget-label">Simplified Ratio</span>
+                        <span class="widget-value" id="widget-simplified-val">1 : 1</span>
+                    </div>
+
+                    <!-- Fractions Widget -->
+                    <div class="dashboard-widget" id="widget-fraction">
+                        <span class="widget-label">Ingredient Fractions</span>
+                        <div style="display: flex; flex-direction: column; gap: 2px; margin-top: 4px;">
+                            <span style="font-size: 0.9rem;">Yellow: <strong id="widget-frac-y">1/2 (50%)</strong></span>
+                            <span style="font-size: 0.9rem;">Blue: <strong id="widget-frac-b">1/2 (50%)</strong></span>
+                        </div>
+                    </div>
+
+                    <!-- Ratio Strip Representation -->
+                    <div class="dashboard-widget" id="widget-strip" style="grid-column: 1 / -1;">
+                        <span class="widget-label">Ratio Strip</span>
+                        <div class="ratio-strip-bar" id="ratio-strip-element">
+                            <div class="strip-segment strip-yellow" id="strip-seg-y" style="width: 50%;">Y</div>
+                            <div class="strip-segment strip-blue" id="strip-seg-b" style="width: 50%;">B</div>
+                        </div>
+                    </div>
+
+                    <!-- Pie Chart Graphic Representation -->
+                    <div class="dashboard-widget" id="widget-pie">
+                        <span class="widget-label">Composition Pie</span>
+                        <div class="chart-flex">
+                            <svg width="100" height="100" viewBox="0 0 32 32" class="pie-svg">
+                                <circle r="16" cx="16" cy="16" fill="var(--blue-paint)" />
+                                <circle r="16" cx="16" cy="16" fill="transparent" 
+                                        stroke="var(--yellow-paint)" 
+                                        stroke-width="32" 
+                                        stroke-dasharray="50 100" 
+                                        id="pie-chart-slice" />
+                            </svg>
+                        </div>
+                    </div>
+
+                    <!-- Double Number Line Representation -->
+                    <div class="dashboard-widget" id="widget-numberline">
+                        <span class="widget-label">Double Number Line Scale</span>
+                        <div style="margin-top: 8px;">
+                            <svg class="double-number-line-svg" id="double-line-svg" viewBox="0 0 400 100">
+                                <!-- Dynamically Rendered SVG Content -->
+                            </svg>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Saved Recipes Gallery -->
+            <section class="panel">
+                <h2 class="panel-title">
+                    <span>3. Green Collection Gallery</span>
+                    <div style="display:flex; gap:8px;">
+                        <button class="btn btn-clear" style="padding: 4px 10px; font-size: 0.75rem;" onclick="organizeGallery('yellow')">Most Yellow</button>
+                        <button class="btn btn-clear" style="padding: 4px 10px; font-size: 0.75rem;" onclick="organizeGallery('blue')">Most Blue</button>
+                    </div>
+                </h2>
+
+                <div class="gallery-shelf" id="gallery-container">
+                    <p style="color: var(--slate-400); text-align: center; width: 100%; grid-column: 1/-1; padding: 20px 0; font-size: 0.9rem;">
+                        No recipes saved yet. Adjust dispensers & click "Save Shade" to start your scientific laboratory index!
+                    </p>
+                </div>
+
+                <!-- Compare Panel -->
+                <div class="compare-box" id="compare-console">
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
+                        <h4 style="color:#1e3a8a;">🔬 Laboratory Analysis</h4>
+                        <button class="btn btn-clear" style="padding: 4px 8px; font-size: 0.75rem;" onclick="closeCompareMode()">Clear Comparison</button>
+                    </div>
+                    <div class="compare-row">
+                        <div class="compare-card" id="compare-slot-a">Recipe A</div>
+                        <div class="compare-card" id="compare-slot-b">Recipe B</div>
+                    </div>
+                    <p id="comparison-analysis-prompt" style="font-size: 0.9rem; color: #1e40af; font-weight: 500; text-align: center; line-height: 1.4;"></p>
+                </div>
+            </section>
+
+            <!-- Active Lab Inquiry Challenges Board -->
+            <section class="panel">
+                <h2 class="panel-title">
+                    <span>4. Active Lab Inquiry Missions</span>
+                </h2>
+                <div class="challenge-board-all">
+                    <!-- Mission 1 -->
+                    <div class="challenge-card-item" id="chk-card-1">
+                        <div class="challenge-badge-status" id="chk-status-1">
+                            <span>Pending</span>
+                        </div>
+                        <div class="challenge-card-title">Mission 1: The Golden Ratio</div>
+                        <div class="challenge-card-text">Mix and save a recipe where the amounts of yellow and blue are perfectly equal (e.g., 1:1, 4:4, or 10:10).</div>
+                    </div>
+
+                    <!-- Mission 2 -->
+                    <div class="challenge-card-item" id="chk-card-2">
+                        <div class="challenge-badge-status" id="chk-status-2">
+                            <span>Pending</span>
+                        </div>
+                        <div class="challenge-card-title">Mission 2: Deep Sea Dive</div>
+                        <div class="challenge-card-text">Create a recipe where blue is at least 75% of the mixture. What class of green is produced?</div>
+                    </div>
+
+                    <!-- Mission 3 -->
+                    <div class="challenge-card-item" id="chk-card-3">
+                        <div class="challenge-badge-status" id="chk-status-3">
+                            <span>Pending</span>
+                        </div>
+                        <div class="challenge-card-title">Mission 3: Bright Chartreuse</div>
+                        <div class="challenge-card-text">Produce a vibrant yellow-green recipe where the fraction of yellow is exactly 4/5 of the mix.</div>
+                    </div>
+
+                    <!-- Mission 4 -->
+                    <div class="challenge-card-item" id="chk-card-4">
+                        <div class="challenge-badge-status" id="chk-status-4">
+                            <span>Pending</span>
+                        </div>
+                        <div class="challenge-card-title">Mission 4: Scaling Equivalents</div>
+                        <div class="challenge-card-text">Save two different recipes that simplify to the exact same ratio (e.g., 3:2 and 6:4). Use Compare Mode to test.</div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Teacher Console Panel -->
+            <section class="teacher-accordion">
+                <div class="teacher-bar" onclick="toggleTeacherConsole()">
+                    <span>Teacher Administration Console & Scaffold Controls</span>
+                    <span id="teacher-accordion-arrow">▼</span>
+                </div>
+                <div class="teacher-body" id="teacher-console-body">
+                    <p style="font-size: 0.9rem; color: #0369a1; margin-bottom: 12px; line-height: 1.4;">
+                        Guide student discovery! Toggle individual mathematical representations on or off to support scaffolded lessons. For example, hide the simplified ratio to let students discover common divisors organically.
+                    </p>
+                    <div class="toggle-grid">
+                        <label class="toggle-switch">
+                            <input type="checkbox" id="teacher-show-ratio" checked onchange="toggleRepresentation('widget-ratio', this.checked)">
+                            Display Ratio Y : B
+                        </label>
+                        <label class="toggle-switch">
+                            <input type="checkbox" id="teacher-show-simplified" checked onchange="toggleRepresentation('widget-simplified', this.checked)">
+                            Display Simplified Ratio
+                        </label>
+                        <label class="toggle-switch">
+                            <input type="checkbox" id="teacher-show-fractions" checked onchange="toggleRepresentation('widget-fraction', this.checked)">
+                            Display Ingredient Fractions
+                        </label>
+                        <label class="toggle-switch">
+                            <input type="checkbox" id="teacher-show-totals" checked onchange="toggleRepresentation('widget-totals', this.checked)">
+                            Display Total Volume Units
+                        </label>
+                        <label class="toggle-switch">
+                            <input type="checkbox" id="teacher-show-strip" checked onchange="toggleRepresentation('widget-strip', this.checked)">
+                            Display Ratio Strip
+                        </label>
+                        <label class="toggle-switch">
+                            <input type="checkbox" id="teacher-show-pie" checked onchange="toggleRepresentation('widget-pie', this.checked)">
+                            Display Composition Pie
+                        </label>
+                        <label class="toggle-switch">
+                            <input type="checkbox" id="teacher-show-numberline" checked onchange="toggleRepresentation('widget-numberline', this.checked)">
+                            Display Double Number Line
+                        </label>
+                    </div>
+                    <div style="display: flex; gap: 12px; flex-wrap: wrap; margin-top: 12px; padding-top: 16px; border-top: 1px solid #bae6fd;">
+                        <button class="btn btn-clear" style="padding: 6px 12px; font-size: 0.8rem; border-color: #0284c7; color: #0369a1;" onclick="setAllRepresentations(false)">Hide All Representations</button>
+                        <button class="btn btn-clear" style="padding: 6px 12px; font-size: 0.8rem; border-color: #0284c7; color: #0369a1;" onclick="setAllRepresentations(true)">Show All Representations</button>
+                        <button class="btn btn-clear" style="padding: 6px 12px; font-size: 0.8rem; border-color: #0284c7; color: #0369a1;" onclick="exportSessionData()">Export Lab Session</button>
+                    </div>
+                </div>
+            </section>
+
+        </div>
+    </main>
+
+    <script>
+        // Core Simulation State
+        const state = {
+            yellow: 1,
+            blue: 1,
+            savedRecipes: [],
+            selectedForComparison: [],
+            uniqueRatiosExplored: new Set(),
+            badges: {
+                explorer: false,
+                creator: false,
+                detective: false,
+                equivalent: false,
+                mixer: false
+            },
+            missions: {
+                m1: false,
+                m2: false,
+                m3: false,
+                m4: false
+            }
+        };
+
+        // Audio Effects Synthesizer using Web Audio API
+        const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+        
+        function playChime() {
+            try {
+                const osc = audioCtx.createOscillator();
+                const gain = audioCtx.createGain();
+                osc.connect(gain);
+                gain.connect(audioCtx.destination);
+                osc.type = 'sine';
+                
+                const now = audioCtx.currentTime;
+                osc.frequency.setValueAtTime(523.25, now); // C5
+                osc.frequency.setValueAtTime(659.25, now + 0.1); // E5
+                osc.frequency.setValueAtTime(783.99, now + 0.2); // G5
+                osc.frequency.setValueAtTime(1046.50, now + 0.3); // C6
+                
+                gain.gain.setValueAtTime(0.15, now);
+                gain.gain.exponentialRampToValueAtTime(0.01, now + 0.5);
+                
+                osc.start(now);
+                osc.stop(now + 0.6);
+            } catch (e) {
+                // AudioContext not started or blocked
+            }
+        }
+
+        function playPourSound() {
+            try {
+                const osc = audioCtx.createOscillator();
+                const gain = audioCtx.createGain();
+                osc.connect(gain);
+                gain.connect(audioCtx.destination);
+                osc.type = 'triangle';
+                
+                const now = audioCtx.currentTime;
+                osc.frequency.setValueAtTime(120, now);
+                osc.frequency.exponentialRampToValueAtTime(320, now + 0.2);
+                
+                gain.gain.setValueAtTime(0.2, now);
+                gain.gain.exponentialRampToValueAtTime(0.01, now + 0.22);
+                
+                osc.start(now);
+                osc.stop(now + 0.25);
+            } catch (e) {
+                // AudioContext blocked
+            }
+        }
+
+        // Color Paint Simulation Mixing Engine
+        function blendPaints(y, b) {
+            if (y === 0 && b === 0) return 'rgba(255, 255, 255, 0.9)';
+            const ratioY = y / (y + b);
+            
+            let r, g, bVal;
+            if (ratioY < 0.5) {
+                const step = ratioY / 0.5;
+                r = Math.round(37 + (16 - 37) * step);
+                g = Math.round(99 + (185 - 99) * step);
+                bVal = Math.round(235 + (129 - 235) * step);
+            } else {
+                const step = (ratioY - 0.5) / 0.5;
+                r = Math.round(16 + (250 - 16) * step);
+                g = Math.round(185 + (204 - 185) * step);
+                bVal = Math.round(129 + (21 - 129) * step);
+            }
+            return `rgb(${r}, ${g}, ${bVal})`;
+        }
+
+        function getShadeDescriptor(y, b) {
+            if (y === 0 && b === 0) return "Empty Beaker";
+            const ratioY = y / (y + b);
+            if (ratioY > 0.85) return "Bright Lemon Chartreuse";
+            if (ratioY > 0.70) return "Fresh Lime Green";
+            if (ratioY > 0.55) return "Spring Meadow Green";
+            if (ratioY > 0.45) return "Balanced Forest Green";
+            if (ratioY > 0.30) return "Deep Jungle Jade";
+            if (ratioY > 0.15) return "Cool Deep Ocean Emerald";
+            return "Vibrant Royal Azure";
+        }
+
+        // GCD Utility
+        function computeGCD(a, b) {
+            return b === 0 ? a : computeGCD(b, a % b);
+        }
+
+        // Main Interaction Interface Driver
+        function handleMixChange() {
+            const y = parseInt(document.getElementById('slider-yellow').value, 10);
+            const b = parseInt(document.getElementById('slider-blue').value, 10);
+            
+            state.yellow = y;
+            state.blue = b;
+
+            document.getElementById('dispenser-y-val').innerText = y;
+            document.getElementById('dispenser-b-val').innerText = b;
+
+            updateBeakerVisuals();
+            renderDashboard();
+            evaluateMissionsOnTheFly(y, b);
+            evaluateBadges();
+        }
+
+        function adjustDispenser(color, delta) {
+            const input = document.getElementById(`slider-${color}`);
+            let val = parseInt(input.value, 10) + delta;
+            val = Math.max(0, Math.min(20, val));
+            input.value = val;
+            
+            const stream = document.getElementById(`stream-${color}`);
+            stream.classList.add('active');
+            playPourSound();
+            setTimeout(() => stream.classList.remove('active'), 250);
+
+            handleMixChange();
+        }
+
+        function resetDispenser() {
+            document.getElementById('slider-yellow').value = 1;
+            document.getElementById('slider-blue').value = 1;
+            handleMixChange();
+        }
+
+        // GUI Beaker Updates
+        function updateBeakerVisuals() {
+            const total = state.yellow + state.blue;
+            const fluid = document.getElementById('beaker-fluid-level');
+            const label = document.getElementById('beaker-shade-label');
+
+            if (total === 0) {
+                fluid.style.height = '0%';
+                fluid.style.backgroundColor = 'transparent';
+                label.innerText = 'Empty Beaker';
+                return;
+            }
+
+            const pct = Math.min(100, (total / 40) * 100);
+            fluid.style.height = `${pct}%`;
+            fluid.style.backgroundColor = blendPaints(state.yellow, state.blue);
+            label.innerText = getShadeDescriptor(state.yellow, state.blue);
+        }
+
+        // Dynamic Mathematical Dashboard Render Engine
+        function renderDashboard() {
+            const y = state.yellow;
+            const b = state.blue;
+            const total = y + b;
+
+            if (total === 0) {
+                document.getElementById('widget-total-val').innerText = '0 units';
+                document.getElementById('widget-breakdown-val').innerText = '(0Y : 0B)';
+                document.getElementById('widget-ratio-val').innerText = '0 : 0';
+                document.getElementById('widget-simplified-val').innerText = 'N/A';
+                document.getElementById('widget-frac-y').innerText = '0';
+                document.getElementById('widget-frac-b').innerText = '0';
+                
+                document.getElementById('strip-seg-y').style.width = '0%';
+                document.getElementById('strip-seg-b').style.width = '0%';
+                document.getElementById('strip-seg-y').innerText = '';
+                document.getElementById('strip-seg-b').innerText = '';
+                
+                document.getElementById('pie-chart-slice').setAttribute('stroke-dasharray', '0 100');
+                document.getElementById('double-line-svg').innerHTML = '';
+                return;
+            }
+
+            const divisor = computeGCD(y, b);
+            const simY = y / divisor;
+            const simB = b / divisor;
+
+            document.getElementById('widget-total-val').innerText = `${total} unit${total > 1 ? 's' : ''}`;
+            document.getElementById('widget-breakdown-val').innerText = `(${y}Y : ${b}B)`;
+            document.getElementById('widget-ratio-val').innerText = `${y} : ${b}`;
+            document.getElementById('widget-simplified-val').innerText = `${simY} : ${simB}`;
+
+            const pctY = Math.round((y / total) * 100);
+            const pctB = Math.round((b / total) * 100);
+            document.getElementById('widget-frac-y').innerText = `${y}/${total} (${pctY}%)`;
+            document.getElementById('widget-frac-b').innerText = `${b}/${total} (${pctB}%)`;
+
+            const segY = document.getElementById('strip-seg-y');
+            const segB = document.getElementById('strip-seg-b');
+            const ratioPctY = (y / total) * 100;
+            const ratioPctB = (b / total) * 100;
+
+            segY.style.width = `${ratioPctY}%`;
+            segY.innerText = y > 0 ? `Y: ${y}` : '';
+            segB.style.width = `${ratioPctB}%`;
+            segB.innerText = b > 0 ? `B: ${b}` : '';
+
+            document.getElementById('pie-chart-slice').setAttribute('stroke-dasharray', `${ratioPctY} 100`);
+
+            renderDoubleNumberLine(simY, simB, y, b);
+        }
+
+        function renderDoubleNumberLine(simY, simB, currentY, currentB) {
+            const svg = document.getElementById('double-line-svg');
+            svg.innerHTML = '';
+
+            const startX = 30;
+            const endX = 370;
+            const length = endX - startX;
+            const maxIntervals = 5;
+            
+            let nodes = [];
+            for (let i = 0; i <= maxIntervals; i++) {
+                nodes.push({
+                    y: simY * i,
+                    b: simB * i,
+                    x: startX + (i / maxIntervals) * length
+                });
+            }
+
+            const lineY = document.createElementNS('http://www.w3.org/2000/svg', 'line');
+            lineY.setAttribute('x1', startX);
+            lineY.setAttribute('y1', '35');
+            lineY.setAttribute('x2', endX);
+            lineY.setAttribute('y2', '35');
+            lineY.setAttribute('stroke', '#64748b');
+            lineY.setAttribute('stroke-width', '2');
+            svg.appendChild(lineY);
+
+            const lineB = document.createElementNS('http://www.w3.org/2000/svg', 'line');
+            lineB.setAttribute('x1', startX);
+            lineB.setAttribute('y1', '65');
+            lineB.setAttribute('x2', endX);
+            lineB.setAttribute('y2', '65');
+            lineB.setAttribute('stroke', '#64748b');
+            lineB.setAttribute('stroke-width', '2');
+            svg.appendChild(lineB);
+
+            const labelY = document.createElementNS('http://www.w3.org/2000/svg', 'text');
+            labelY.setAttribute('x', '10');
+            labelY.setAttribute('y', '38');
+            labelY.setAttribute('font-size', '10');
+            labelY.setAttribute('font-weight', 'bold');
+            labelY.setAttribute('fill', '#eab308');
+            labelY.textContent = 'Y';
+            svg.appendChild(labelY);
+
+            const labelB = document.createElementNS('http://www.w3.org/2000/svg', 'text');
+            labelB.setAttribute('x', '10');
+            labelB.setAttribute('y', '68');
+            labelB.setAttribute('font-size', '10');
+            labelB.setAttribute('font-weight', 'bold');
+            labelB.setAttribute('fill', '#2563eb');
+            labelB.textContent = 'B';
+            svg.appendChild(labelB);
+
+            nodes.forEach(node => {
+                const tickY = document.createElementNS('http://www.w3.org/2000/svg', 'line');
+                tickY.setAttribute('x1', node.x);
+                tickY.setAttribute('y1', '30');
+                tickY.setAttribute('x2', node.x);
+                tickY.setAttribute('y2', '40');
+                tickY.setAttribute('stroke', '#475569');
+                tickY.setAttribute('stroke-width', '1.5');
+                svg.appendChild(tickY);
+
+                const txtY = document.createElementNS('http://www.w3.org/2000/svg', 'text');
+                txtY.setAttribute('x', node.x);
+                txtY.setAttribute('y', '24');
+                txtY.setAttribute('text-anchor', 'middle');
+                txtY.setAttribute('font-size', '9');
+                txtY.textContent = node.y;
+                svg.appendChild(txtY);
+
+                const tickB = document.createElementNS('http://www.w3.org/2000/svg', 'line');
+                tickB.setAttribute('x1', node.x);
+                tickB.setAttribute('y1', '60');
+                tickB.setAttribute('x2', node.x);
+                tickB.setAttribute('y2', '70');
+                tickB.setAttribute('stroke', '#475569');
+                tickB.setAttribute('stroke-width', '1.5');
+                svg.appendChild(tickB);
+
+                const txtB = document.createElementNS('http://www.w3.org/2000/svg', 'text');
+                txtB.setAttribute('x', node.x);
+                txtB.setAttribute('y', '84');
+                txtB.setAttribute('text-anchor', 'middle');
+                txtB.setAttribute('font-size', '9');
+                txtB.textContent = node.b;
+                svg.appendChild(txtB);
+
+                if (node.y === currentY && node.b === currentB) {
+                    const highlight = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
+                    highlight.setAttribute('cx', node.x);
+                    highlight.setAttribute('cy', '50');
+                    highlight.setAttribute('r', '5');
+                    highlight.setAttribute('fill', 'var(--green-lab)');
+                    svg.appendChild(highlight);
+                }
+            });
+        }
+
+        // Active Mission Evaluation Logic
+        function evaluateMissionsOnTheFly(y, b) {
+            const total = y + b;
+            if (total === 0) return;
+
+            // Mission 1: Equal quantities
+            if (y === b && y > 0) {
+                markMissionComplete('m1');
+            }
+
+            // Mission 2: Blue >= 75%
+            if ((b / total) >= 0.75) {
+                markMissionComplete('m2');
+            }
+
+            // Mission 3: Yellow exactly 4/5 (80%)
+            if (total > 0 && (y / total) === 0.8) {
+                markMissionComplete('m3');
+            }
+        }
+
+        function markMissionComplete(id) {
+            if (state.missions[id]) return; // Already solved
+            state.missions[id] = true;
+
+            const card = document.getElementById(`chk-card-${id.substring(1)}`);
+            const status = document.getElementById(`chk-status-${id.substring(1)}`);
+
+            card.classList.add('achieved');
+            status.innerHTML = `
+                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" style="margin-right:2px;"><polyline points="20 6 9 17 4 12"></polyline></svg>
+                Achieved
+            `;
+            status.className = "challenge-badge-status achieved-txt";
+            playChime();
+        }
+
+        // Recipe Storage and Comparison Engine
+        function saveCurrentRecipe() {
+            const y = state.yellow;
+            const b = state.blue;
+            const total = y + b;
+
+            if (total === 0) return;
+
+            if (state.savedRecipes.some(r => r.y === y && r.b === b)) {
+                return;
+            }
+
+            const recipe = {
+                id: Date.now(),
+                y,
+                b,
+                total,
+                shadeName: getShadeDescriptor(y, b),
+                colorValue: blendPaints(y, b)
+            };
+
+            state.savedRecipes.push(recipe);
+            state.uniqueRatiosExplored.add(`${y / total}`);
+
+            evaluateMissionsOnTheFly(y, b);
+
+            playChime();
+            renderGallery();
+            evaluateBadges();
+        }
+
+        function removeRecipe(id, event) {
+            event.stopPropagation();
+            state.savedRecipes = state.savedRecipes.filter(r => r.id !== id);
+            
+            state.selectedForComparison = state.selectedForComparison.filter(r => r.id !== id);
+            if (state.selectedForComparison.length < 2) {
+                document.getElementById('compare-console').style.display = 'none';
+            }
+
+            renderGallery();
+        }
+
+        function renderGallery() {
+            const shelf = document.getElementById('gallery-container');
+            shelf.innerHTML = '';
+
+            if (state.savedRecipes.length === 0) {
+                shelf.innerHTML = `
+                    <p style="color: var(--slate-400); text-align: center; width: 100%; grid-column: 1/-1; padding: 20px 0; font-size: 0.9rem;">
+                        No recipes saved yet. Adjust dispensers & click "Save Shade" to start your scientific laboratory index!
+                    </p>
+                `;
+                return;
+            }
+
+            state.savedRecipes.forEach(recipe => {
+                const isSelected = state.selectedForComparison.some(r => r.id === recipe.id);
+                
+                const card = document.createElement('div');
+                card.className = `gallery-item ${isSelected ? 'selected' : ''}`;
+                card.onclick = () => selectRecipeForComparison(recipe);
+
+                card.innerHTML = `
+                    <button class="btn-delete-swatch" onclick="removeRecipe(${recipe.id}, event)" aria-label="Delete saved recipe">&times;</button>
+                    <div class="swatch-box" style="background-color: ${recipe.colorValue};"></div>
+                    <div class="swatch-meta">
+                        <div style="font-weight: 700;">${recipe.shadeName}</div>
+                        <div style="color: var(--slate-400); font-size:0.7rem; margin-top:2px;">Y:${recipe.y} &bull; B:${recipe.b}</div>
+                    </div>
+                `;
+
+                shelf.appendChild(card);
+            });
+        }
+
+        function organizeGallery(priority) {
+            if (state.savedRecipes.length === 0) return;
+
+            state.savedRecipes.sort((a, b) => {
+                const ratioA = a.y / a.total;
+                const ratioB = b.y / b.total;
+                return priority === 'yellow' ? ratioB - ratioA : ratioA - ratioB;
+            });
+
+            renderGallery();
+        }
+
+        // Compare Module Controller
+        function selectRecipeForComparison(recipe) {
+            if (state.selectedForComparison.some(r => r.id === recipe.id)) {
+                state.selectedForComparison = state.selectedForComparison.filter(r => r.id !== recipe.id);
+            } else {
+                if (state.selectedForComparison.length >= 2) {
+                    state.selectedForComparison.shift();
+                }
+                state.selectedForComparison.push(recipe);
+            }
+
+            renderGallery();
+            updateComparisonConsole();
+        }
+
+        function updateComparisonConsole() {
+            const consoleBox = document.getElementById('compare-console');
+            if (state.selectedForComparison.length < 2) {
+                consoleBox.style.display = 'none';
+                return;
+            }
+
+            consoleBox.style.display = 'block';
+            const rA = state.selectedForComparison[0];
+            const rB = state.selectedForComparison[1];
+
+            const slotA = document.getElementById('compare-slot-a');
+            const slotB = document.getElementById('compare-slot-b');
+
+            slotA.innerHTML = `
+                <div style="width:100%; height:30px; border-radius:4px; margin-bottom:4px; background-color:${rA.colorValue};"></div>
+                <strong>${rA.shadeName}</strong><br>
+                Recipe: ${rA.y}Y : ${rA.b}B<br>
+                Ratio: ${rA.y} : ${rA.b}
+            `;
+
+            slotB.innerHTML = `
+                <div style="width:100%; height:30px; border-radius:4px; margin-bottom:4px; background-color:${rB.colorValue};"></div>
+                <strong>${rB.shadeName}</strong><br>
+                Recipe: ${rB.y}Y : ${rB.b}B<br>
+                Ratio: ${rB.y} : ${rB.b}
+            `;
+
+            const gcdA = computeGCD(rA.y, rA.b);
+            const gcdB = computeGCD(rB.y, rB.b);
+            const simYA = rA.y / gcdA;
+            const simBA = rA.b / gcdA;
+            const simYB = rB.y / gcdB;
+            const simBB = rB.b / gcdB;
+
+            const isEquivalent = (simYA === simYB && simBA === simBB);
+
+            const promptText = document.getElementById('comparison-analysis-prompt');
+            if (isEquivalent) {
+                promptText.innerText = `What do you notice about these two mixtures? Despite using different unit numbers (${rA.y}:${rA.b} vs ${rB.y}:${rB.b}), they match visually! What mathematical explanation can you provide for this?`;
+                markMissionComplete('m4');
+            } else {
+                promptText.innerText = `Observe the difference between these mixtures. Recipe A has a composition ratio of ${rA.y}:${rA.b} while Recipe B is set at ${rB.y}:${rB.b}. How does altering the proportional values change the resulting shade of green?`;
+            }
+
+            state.badges.detective = true;
+            if (isEquivalent) {
+                state.badges.equivalent = true;
+            }
+            evaluateBadges();
+        }
+
+        function closeCompareMode() {
+            state.selectedForComparison = [];
+            renderGallery();
+            document.getElementById('compare-console').style.display = 'none';
+        }
+
+        // Gamification / Badges Validator
+        function evaluateBadges() {
+            if (state.uniqueRatiosExplored.size >= 5) {
+                state.badges.explorer = true;
+            }
+            if (state.savedRecipes.length >= 3) {
+                state.badges.creator = true;
+            }
+            if ((state.yellow + state.blue) >= 20) {
+                state.badges.mixer = true;
+            }
+
+            for (const key in state.badges) {
+                const pill = document.getElementById(`badge-${key}`);
+                if (state.badges[key]) {
+                    if (!pill.classList.contains('unlocked')) {
+                        pill.classList.add('unlocked');
+                    }
+                }
+            }
+        }
+
+        // Teacher Controls Framework
+        function toggleTeacherConsole() {
+            const body = document.getElementById('teacher-console-body');
+            const arrow = document.getElementById('teacher-accordion-arrow');
+            body.classList.toggle('expanded');
+            arrow.innerText = body.classList.contains('expanded') ? '▲' : '▼';
+        }
+
+        function toggleRepresentation(widgetId, isVisible) {
+            const widget = document.getElementById(widgetId);
+            if (isVisible) {
+                widget.classList.remove('representation-hidden');
+            } else {
+                widget.classList.add('representation-hidden');
+            }
+        }
+
+        function setAllRepresentations(status) {
+            const checkboxes = [
+                'teacher-show-ratio',
+                'teacher-show-simplified',
+                'teacher-show-fractions',
+                'teacher-show-totals',
+                'teacher-show-strip',
+                'teacher-show-pie',
+                'teacher-show-numberline'
+            ];
+            
+            const mapping = {
+                'teacher-show-ratio': 'widget-ratio',
+                'teacher-show-simplified': 'widget-simplified',
+                'teacher-show-fractions': 'widget-fraction',
+                'teacher-show-totals': 'widget-totals',
+                'teacher-show-strip': 'widget-strip',
+                'teacher-show-pie': 'widget-pie',
+                'teacher-show-numberline': 'widget-numberline'
+            };
+
+            checkboxes.forEach(chkId => {
+                const chk = document.getElementById(chkId);
+                chk.checked = status;
+                toggleRepresentation(mapping[chkId], status);
+            });
+        }
+
+        function exportSessionData() {
+            const data = {
+                savedRecipes: state.savedRecipes,
+                badgesUnlocked: state.badges,
+                missionsCompleted: state.missions
+            };
+            const jsonString = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(data, null, 2));
+            const dlAnchorElem = document.createElement('a');
+            dlAnchorElem.setAttribute("href", jsonString);
+            dlAnchorElem.setAttribute("download", "the_green_lab_session.json");
+            dlAnchorElem.click();
+        }
+
+        // Initializer
+        window.addEventListener('load', () => {
+            handleMixChange();
+        });
+    </script>
+</body>
+</html>
